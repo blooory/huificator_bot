@@ -41,5 +41,5 @@ def preprocess_text(text):
     exclude = set(string.punctuation)
     text = (''.join(ch for ch in text if ch not in exclude)).lower()
     text = leave_only_russian_letters(text)
-    text = [x for x in (set(text.split(' ')) - {''}) if n_slogov(x)>=1]
+    text = [x for x in (set(text.split(' ')) - {''}) if n_slogov(x)>=2]
     return text

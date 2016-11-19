@@ -4,6 +4,7 @@ import telegram
 import logging
 import numpy as np
 import json
+import pickle
 from special_function import special_function
 from word_functions import n_slogov, vowel_pos, replace_string, leave_only_russian_letters, huificate_word, preprocess_text
 
@@ -16,13 +17,15 @@ def start(bot, update):
     update.message.reply_text('Хуй тебе {0}, рад видеть'.format(update.message.from_user.first_name))
     with open('chat_ids.txt', 'a') as f:
         f.write(str(update.message.chat_id) +';'+ update.message.from_user.first_name + ';'+ update.message.from_user.last_name + ';' + str(update.message.date) +'\n')
+    with open('update.pkl', 'wb') as f:
+        pickle.dump(update, f)
 
 def hui(bot, update):
     rv = np.random.rand(1)[0]
     if rv < 0.3:
         text = preprocess_text(update.message.text)
         if len(text) != 0:  
-            flag, hui_word = special_function(text)
+            flag, hui_word = special_function(text, update)
             if flag:
                 bot.sendMessage(chat_id = update.message.chat_id, text = hui_word)
             elif (rv<0.05):        
