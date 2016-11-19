@@ -45,7 +45,7 @@ def preprocess_text(text):
     exclude = set(string.punctuation)
     text = (''.join(ch for ch in text if ch not in exclude)).lower()
     text = leave_only_russian_letters(text)
-    text = [x for x in (set(text.split(' ')) - {''}) if n_slogov(x)>=2]
+    text = [x for x in (set(text.split(' ')) - {''}) if n_slogov(x)>=1]
     return text
 
 def huificate_word(hui_word):
@@ -62,11 +62,29 @@ def huificate_word(hui_word):
     return prefix + vowel + postfix
 
 def hui(bot, update):
-    if np.random.rand(1)[0] < 0.05:
+    rv = np.random.rand(1)[0]
+    if rv < 0.3:
+        flag = True
         text = preprocess_text(update.message.text)
         if len(text) != 0:  
-            hui_word = huificate_word(np.random.choice(text, 1)[0])
-            bot.sendMessage(chat_id = update.message.chat_id, text = hui_word)
+            if len(set(text).intersection({'вася', 'васи', 'васю', 'васей', 'вась'})) != 0:
+                if 'вася' in text:
+                    hui_word = huificate_word('вася')
+                elif 'васи' in text:
+                    hui_word = huificate_word('васи')
+                elif 'васю' in text:
+                    hui_word = huificate_word('васю')
+                elif 'васей' in text:
+                    hui_word = huificate_word('васей')
+                elif 'вась' in text:
+                    hui_word = huificate_word('вась')
+                hui_word = 'Х' + hui_word[1:]
+                bot.sendMessage(chat_id = update.message.chat_id, text = hui_word)
+                flag = False
+            elif (rv<0.05) and flag:        
+                hui_word = huificate_word(np.random.choice(text, 1)[0])
+                bot.sendMessage(chat_id = update.message.chat_id, text = hui_word)
+            
 
 updater = Updater(TOKEN)
 
