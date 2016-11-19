@@ -14,6 +14,7 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 def n_slogov(s):
     return len(list(filter(lambda x: x in 'уеыаоэяию', list(s))))
 
+
 def vowel_pos(s, num_vowel):
     cnt = 0
     vowel_cnt = 0
@@ -29,6 +30,11 @@ def replace_string(s, d):
         s = s.replace(key, d[key])
     return s
 
+def leave_only_russian_letters(s):
+    s_upd = ''
+    for letter in s:
+        s_upd += letter*(letter in 'йцукенгшщзхъфывапролджэячсмитьбю ')
+    return s_upd
 
 def start(bot, update):
     update.message.reply_text('Хуй тебе {0}, рад видеть'.format(update.message.from_user.first_name))
@@ -36,23 +42,26 @@ def start(bot, update):
         f.write(str(update.message.chat_id) +';'+ update.message.from_user.first_name + ';'+ update.message.from_user.last_name + ';' + str(update.message.date) +'\n')
 
 def hui(bot, update):
-    if np.random.randn(1) < 0.01:
+    if np.random.rand(1)[0] < 0.05:
         text = update.message.text
         exclude = set(string.punctuation)
         text = (''.join(ch for ch in text if ch not in exclude)).lower()
+        text = leave_only_russian_letters(text)
         text = [x for x in (set(text.split(' ')) - {''}) if n_slogov(x)>=2]
-        hui_word = np.random.choice(text, 1)[0]
-        prefix = 'ху'
-        if n_slogov(hui_word) <= 2:
-            vowel = hui_word[vowel_pos(hui_word, 1)]
-            postfix = hui_word[(vowel_pos(hui_word, 1)+1):]
-            vowel = replace_string(vowel, {'а':'я', 'у':'ю', 'о':'е'})
-        else:
-            vowel = hui_word[vowel_pos(hui_word, 2)]
-            postfix = hui_word[(vowel_pos(hui_word, 2)+1):]
-            vowel = replace_string(vowel, {'а':'я', 'у':'ю', 'о':'е'})
-        hui_word = prefix + vowel + postfix
-        bot.sendMessage(chat_id = update.message.chat_id, text = hui_word)
+        if len(text) != 0:
+            hui_word = np.random.choice(text, 1)[0]
+            prefix = 'ху'
+            print(hui_word)
+            if n_slogov(hui_word) <= 2:
+                vowel = hui_word[vowel_pos(hui_word, 1)]
+                postfix = hui_word[(vowel_pos(hui_word, 1)+1):]
+                vowel = replace_string(vowel, {'а':'я', 'у':'ю', 'о':'е'})
+            else:
+                vowel = hui_word[vowel_pos(hui_word, 2)]
+                postfix = hui_word[(vowel_pos(hui_word, 2)+1):]
+                vowel = replace_string(vowel, {'а':'я', 'у':'ю', 'о':'е'})
+            hui_word = prefix + vowel + postfix
+            bot.sendMessage(chat_id = update.message.chat_id, text = hui_word)
 
 updater = Updater(TOKEN)
 
