@@ -28,7 +28,7 @@ def hui(bot, update):
             flag, hui_word = special_function(text, update)
             if flag:
                 bot.sendMessage(chat_id = update.message.chat_id, text = hui_word)
-            elif (rv<0.05):        
+            elif (rv<0.1):        
                 hui_word = huificate_word(np.random.choice(text, 1)[0])
                 bot.sendMessage(chat_id = update.message.chat_id, text = hui_word)
             
