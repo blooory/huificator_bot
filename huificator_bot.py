@@ -41,26 +41,31 @@ def start(bot, update):
     with open('chat_ids.txt', 'a') as f:
         f.write(str(update.message.chat_id) +';'+ update.message.from_user.first_name + ';'+ update.message.from_user.last_name + ';' + str(update.message.date) +'\n')
 
+def preprocess_text(text):
+    exclude = set(string.punctuation)
+    text = (''.join(ch for ch in text if ch not in exclude)).lower()
+    text = leave_only_russian_letters(text)
+    text = [x for x in (set(text.split(' ')) - {''}) if n_slogov(x)>=2]
+    return text
+
+def huificate_word(hui_word):
+    prefix = 'ху'
+    print(hui_word)
+    if n_slogov(hui_word) <= 2:
+        vowel = hui_word[vowel_pos(hui_word, 1)]
+        postfix = hui_word[(vowel_pos(hui_word, 1)+1):]
+        vowel = replace_string(vowel, {'а':'я', 'у':'ю', 'о':'е'})
+    else:
+        vowel = hui_word[vowel_pos(hui_word, 2)]
+        postfix = hui_word[(vowel_pos(hui_word, 2)+1):]
+        vowel = replace_string(vowel, {'а':'я', 'у':'ю', 'о':'е'})
+    return prefix + vowel + postfix
+
 def hui(bot, update):
     if np.random.rand(1)[0] < 0.05:
-        text = update.message.text
-        exclude = set(string.punctuation)
-        text = (''.join(ch for ch in text if ch not in exclude)).lower()
-        text = leave_only_russian_letters(text)
-        text = [x for x in (set(text.split(' ')) - {''}) if n_slogov(x)>=2]
-        if len(text) != 0:
-            hui_word = np.random.choice(text, 1)[0]
-            prefix = 'ху'
-            print(hui_word)
-            if n_slogov(hui_word) <= 2:
-                vowel = hui_word[vowel_pos(hui_word, 1)]
-                postfix = hui_word[(vowel_pos(hui_word, 1)+1):]
-                vowel = replace_string(vowel, {'а':'я', 'у':'ю', 'о':'е'})
-            else:
-                vowel = hui_word[vowel_pos(hui_word, 2)]
-                postfix = hui_word[(vowel_pos(hui_word, 2)+1):]
-                vowel = replace_string(vowel, {'а':'я', 'у':'ю', 'о':'е'})
-            hui_word = prefix + vowel + postfix
+        text = preprocess_text(update.message.text)
+        if len(text) != 0:  
+            hui_word = huificate_word(np.random.choice(text, 1)[0])
             bot.sendMessage(chat_id = update.message.chat_id, text = hui_word)
 
 updater = Updater(TOKEN)
