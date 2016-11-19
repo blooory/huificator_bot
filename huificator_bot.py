@@ -64,7 +64,6 @@ def huificate_word(hui_word):
 def hui(bot, update):
     rv = np.random.rand(1)[0]
     if rv < 0.3:
-        flag = True
         text = preprocess_text(update.message.text)
         if len(text) != 0:  
             if len(set(text).intersection({'вася', 'васи', 'васю', 'васей', 'вась'})) != 0:
@@ -80,8 +79,7 @@ def hui(bot, update):
                     hui_word = huificate_word('вась')
                 hui_word = 'Х' + hui_word[1:]
                 bot.sendMessage(chat_id = update.message.chat_id, text = hui_word)
-                flag = False
-            elif (rv<0.05) and flag:        
+            elif (rv<0.05):        
                 hui_word = huificate_word(np.random.choice(text, 1)[0])
                 bot.sendMessage(chat_id = update.message.chat_id, text = hui_word)
             
