@@ -43,3 +43,20 @@ def preprocess_text(text):
     text = leave_only_russian_letters(text)
     text = [x for x in (set(text.split(' ')) - {''}) if n_slogov(x)>=2]
     return text
+    
+def find_verbs(words, parser):
+    verbs = []
+    COUNT = 'sing'
+    GENDER = 'femn'
+    PERSON = '3per'
+    for word in words:
+        res = parser.parse(word)[0]
+        print(res.tag.POS)
+        if (res.tag.POS == 'VERB') | (res.tag.POS == 'INFN'):
+            if res.tag.gender is None:
+                res = res.inflect({COUNT,PERSON})
+            else:
+                res = res.inflect({COUNT,PERSON,GENDER})
+            verbs.append(res.word)
+    return verbs
+    
