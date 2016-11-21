@@ -6,7 +6,7 @@ import numpy as np
 import json
 import pickle
 from special_function import special_function
-from word_functions import n_slogov, vowel_pos, replace_string, leave_only_russian_letters, huificate_word, preprocess_text
+from word_functions import n_slogov, vowel_pos, replace_string, leave_only_russian_letters, huificate_word, preprocess_text, find_verbs
 import pymorphy2 as pm2
 
 with open('params.json', 'r') as temp_file:
@@ -23,6 +23,7 @@ def start(bot, update):
 
 def hui(bot, update):
     rv = np.random.rand(1)[0]
+    # huificate word
     if rv < 0.3:
         text = preprocess_text(update.message.text)
         if len(text) != 0:  
@@ -32,25 +33,22 @@ def hui(bot, update):
             elif (rv<0.1):        
                 hui_word = huificate_word(np.random.choice(text, 1)[0])
                 bot.sendMessage(chat_id = update.message.chat_id, text = hui_word)
-                
-def your_mom(bot, update,parser):
-    rv = np.random.rand(1)[0]
-    if (rv < 0.1):
+    # say smth about mom
+    if (rv > 0.9):
         text = preprocess_text(update.message.text)
         if (len(text) != 0) :
             verbs = find_verbs(text, parser)
-            name_user = update.message['from']['first_name']
-            your_mom_message = 'Мамка твоя '+np.random.choice(verbs,1)[0]+', '+name_user+'!'
-            bot.sendMessage(chat_id = update.message.chat_id, text = your_mom_message)
-        
+            if len(verbs) != 0:
+                name_user = update.message.from_user.first_name
+                your_mom_message = 'Мамка твоя '+np.random.choice(verbs,1)[0]+', '+name_user+'!'
+                bot.sendMessage(chat_id = update.message.chat_id, text = your_mom_message)
 
 updater = Updater(TOKEN)
 
 parser = pm2.MorphAnalyzer()
-
 updater.dispatcher.add_handler(CommandHandler('start', start))
 updater.dispatcher.add_handler(MessageHandler([Filters.text], hui))
-updater.dispatcher.add_handler(MessageHandler([Filters.text], your_mom))
+
 
 updater.start_polling()
 updater.idle()

@@ -51,7 +51,6 @@ def find_verbs(words, parser):
     PERSON = '3per'
     for word in words:
         res = parser.parse(word)[0]
-        print(res.tag.POS)
         if (res.tag.POS == 'VERB') | (res.tag.POS == 'INFN'):
             if res.tag.gender is None:
                 res = res.inflect({COUNT,PERSON})
