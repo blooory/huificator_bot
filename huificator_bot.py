@@ -25,8 +25,11 @@ def hui(bot, update):
     rv = np.random.rand(1)[0]
     # say smth to net
     if str.lower(update.message.text) == 'нет':
-        if rv<0.3:
+        if rv<0.35:
             bot.sendMessage(chat_id = update.message.chat_id, text = 'Пидора ответ!')
+    elif str.lower(update.message.text) == 'да':
+        if rv<0.35:
+            bot.sendMessage(chat_id = update.message.chat_id, text = 'Манда!')
     else:
         # huificate word
         if rv < 0.2:
@@ -39,7 +42,7 @@ def hui(bot, update):
                     hui_word = huificate_word(np.random.choice(text, 1)[0])
                     bot.sendMessage(chat_id = update.message.chat_id, text = hui_word)
         # say smth about mom
-        if (rv > 0.94):
+        if (rv > 0.925):
             print('for mamka', update.message.text)
             text = preprocess_text(update.message.text)
             if (len(text) != 0) :
