@@ -56,6 +56,9 @@ def find_verbs(words, parser):
                 res = res.inflect({COUNT,PERSON})
             else:
                 res = res.inflect({COUNT,PERSON,GENDER})
-            verbs.append(res.word)
+            try:
+                verbs.append(res.word)
+            except:
+                pass
     return verbs
     
