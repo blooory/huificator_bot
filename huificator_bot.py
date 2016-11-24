@@ -24,16 +24,14 @@ def start(bot, update):
     update.message.reply_text('Хуй тебе {0}, рад видеть'.format(update.message.from_user.first_name))
     with open('chat_ids.txt', 'a') as f:
         f.write(str(update.message.chat_id) +';'+ update.message.from_user.first_name + ';'+ update.message.from_user.last_name + ';' + str(update.message.date) +'\n')
-    with open('update.pkl', 'wb') as f:
-        pickle.dump(update, f)
 
 def hui(bot, update):
     rv = np.random.rand(1)[0]
     # say smth to net
     if '?' in update.message.text:
         if rv<0.5:
-            bot.sendMessage(chat_id = update.message.chat_id, text = 'Отвечают только пидарасы!')
-    elif leave_only_russian_letters(str.lower(update.message.text)) in word_dict.keys():
+            bot.sendMessage(chat_id = update.message.chat_id, text = 'Отвечают только пидарасы')
+    elif leave_only_russian_letters(str.lower(update.message.text)) in word_dict:
         if rv<0.35:
             bot.sendMessage(chat_id = update.message.chat_id, text = word_dict[leave_only_russian_letters(str.lower(update.message.text))])
     else:
@@ -49,7 +47,7 @@ def hui(bot, update):
                     bot.sendMessage(chat_id = update.message.chat_id, text = hui_word)
         # say smth about mom
         if (rv > 0.925):
-            print('for mamka', update.message.text)
+            print('for mamka', update.message.text, update.message.chat_id)
             text = preprocess_text(update.message.text)
             if (len(text) != 0) :
                 verbs = find_verbs(text, parser)
