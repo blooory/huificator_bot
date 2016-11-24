@@ -8,9 +8,15 @@ import pickle
 from special_function import special_function
 from word_functions import n_slogov, vowel_pos, replace_string, leave_only_russian_letters, huificate_word, preprocess_text, find_verbs
 import pymorphy2 as pm2
+import csv
 
 with open('params.json', 'r') as temp_file:
     TOKEN = json.load(temp_file)['TOKEN']
+
+# Add word dictionary
+word_dict={}
+with open('dict.txt') as f:
+    word_dict={key:value for (key,value) in csv.reader(f)}
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 
@@ -24,12 +30,12 @@ def start(bot, update):
 def hui(bot, update):
     rv = np.random.rand(1)[0]
     # say smth to net
-    if str.lower(update.message.text) == 'нет':
+    if '?' in update.message.text:
+        if rv<0.5:
+            bot.sendMessage(chat_id = update.message.chat_id, text = 'Отвечают только пидарасы!')
+    elif leave_only_russian_letters(str.lower(update.message.text)) in word_dict.keys():
         if rv<0.35:
-            bot.sendMessage(chat_id = update.message.chat_id, text = 'Пидора ответ!')
-    elif str.lower(update.message.text) == 'да':
-        if rv<0.35:
-            bot.sendMessage(chat_id = update.message.chat_id, text = 'Манда!')
+            bot.sendMessage(chat_id = update.message.chat_id, text = word_dict[leave_only_russian_letters(str.lower(update.message.text))])
     else:
         # huificate word
         if rv < 0.2:
