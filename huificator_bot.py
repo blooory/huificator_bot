@@ -29,7 +29,7 @@ def hui(bot, update):
     rv = np.random.rand(1)[0]
     # say smth to net
     if '?' in update.message.text:
-        if rv<0.5:
+        if rv<0.05:
             bot.sendMessage(chat_id = update.message.chat_id, text = 'Отвечают только пидарасы')
     elif leave_only_russian_letters(str.lower(update.message.text)) in word_dict:
         if rv<0.35:
