@@ -1,4 +1,4 @@
-rimport string
+import string
 
 def n_slogov(s):
     return len(list(filter(lambda x: x in 'уеыаоэяиюё', list(s))))
