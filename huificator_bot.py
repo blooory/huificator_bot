@@ -5,6 +5,7 @@ import logging
 import numpy as np
 import json
 import pickle
+import string
 from special_function import special_function
 from word_functions import we_find_latin_letters,n_slogov, vowel_pos, replace_string, leave_only_russian_letters, huificate_word, preprocess_text, find_verbs
 import pymorphy2 as pm2
@@ -26,8 +27,14 @@ def start(bot, update):
         f.write(str(update.message.chat_id) +';'+ update.message.from_user.first_name + ';'+ update.message.from_user.last_name + ';' + str(update.message.date) +'\n')
 
 import re
-regexp_question = re.compile('\?$')        
-regexp_yes = re.compile('')        
+regexp_question = re.compile('\?$')
+
+new_re_dict = {}
+for phrase in word_dict:
+    my_str = '\s{1,1}'+phrase+'['+string.punctuation+']{0,6}$'+'|^'+phrase+'['+string.punctuation+']{0,6}$'
+    reg_exp = re.compile(my_str)
+    new_re_dict[reg_exp] = word_dict[phrase]
+    
 def hui(bot, update):
     rv = np.random.rand(1)[0]
 
@@ -43,10 +50,13 @@ def hui(bot, update):
     if len(regexp_question.findall(text_raw)) > 0:
         if rv<0.15:
             bot.sendMessage(chat_id = update.message.chat_id, text = 'Отвечают только пидарасы')
-    elif leave_only_russian_letters(str.lower(text_raw)) in word_dict:
-        if rv<0.5:
-            bot.sendMessage(chat_id = update.message.chat_id, text = word_dict[leave_only_russian_letters(str.lower(text_raw))])
     else:
+        # check on regexp compl
+        text_raw = text_raw.lower()
+        for regexp in new_re_dict:
+            if len(regexp.findall(text_raw)) > 0:
+                if rv > 0.5:
+                    bot.sendMessage(chat_id = update.message.chat_id, text = new_re_dict[regexp])
         # huificate word
         if rv < 0.2:
             if len(text) != 0:  
