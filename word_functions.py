@@ -39,7 +39,7 @@ def huificate_word(hui_word):
 
 def preprocess_text(text):
     exclude = set(string.punctuation)
-    text = (''.join(ch for ch in text if ch not in exclude)).lower()
+    text = (''.join(str(ch) for ch in text if ch not in exclude)).lower()
     # I did it in we_find_latin_letters function
     #text = leave_only_russian_letters(text)
     text = [x for x in (set(text.split(' ')) - {''}) if n_slogov(x)>=2]
