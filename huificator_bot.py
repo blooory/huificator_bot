@@ -13,10 +13,12 @@ from word_functions import we_find_latin_letters,n_slogov, vowel_pos, \
 from other_functions import check_time
 import pymorphy2 as pm2
 import csv
-import time
+from datetime import datetime, timedelta
+
 with open('params.json', 'r') as temp_file:
     TOKEN = json.load(temp_file)['TOKEN']
-
+old_message_flag = True
+now = datetime.now()
 # Add word dictionary
 word_dict={}
 with open('dict.txt') as f:
@@ -39,10 +41,15 @@ for phrase in word_dict:
     new_re_dict[reg_exp] = word_dict[phrase]
     
 def hui(bot, update):
+    global old_message_flag
+    if old_message_flag:
+        if update.message.date > now - timedelta(hours = 1):
+            old_message_flag = False
+    else:
 
-    if check_time(update):        
         rv = np.random.rand(1)[0]
-        text_raw = update.message.chat_id
+
+        text_raw = update.message.text
         text = preprocess_text(text_raw)
         text, fake_flag = we_find_latin_letters(text)
         
