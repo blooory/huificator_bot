@@ -68,36 +68,17 @@ latin_to_russian = {u'e':u'е',u'y':u'у',u'o':u'о',u'p':u'р',u'a':u'а',u'k':
 latin_to_russian_keys = list(latin_to_russian.keys())
 russian_letters = u'й ц у к е н г ш щ з х ъ ф ы в а п р о л д ж э ё я ч с м и т ь б ю'.split()
 
-def replace_fake_letter(three_letters):
-    if  three_letters[0] in russian_letters and three_letters[1] in latin_to_russian_keys and\
-    three_letters[0] in russian_letters:
-        three_letters = three_letters[0] + latin_to_russian[three_letters[1]] + three_letters[2]
-    elif three_letters[0] in russian_letters and three_letters[1] in latin_to_russian_keys and\
-    three_letters[2] in latin_to_russian_keys :
-        three_letters = three_letters[0] + latin_to_russian[three_letters[1]] + latin_to_russian[three_letters[2]] 
-    elif three_letters[2] in russian_letters and three_letters[1] in latin_to_russian_keys and\
-    three_letters[0] in latin_to_russian_keys :
-        three_letters = latin_to_russian[three_letters[0]] + latin_to_russian[three_letters[1]]+three_letters[2] 
-    return three_letters
-
-def check_2letter_word(word):
-    flag = False
+def change_letter(symb0):
     try:
-        symb0 = latin_to_russian[word[0]]
-        flag = True
+        symb0 = latin_to_russian[symb0]
     except:
-        symb0 = word[0]
-    try:
-        symb1 = latin_to_russian[word[1]]
-        flag = True
-    except:
-        symb1 = word[1]
-    return symb0+symb1,flag
+        pass
+    return symb0
 
 def find_fake_letters(word):
     old_word = word
-    for i in range(len(word)-2):
-        word = word[:i] + replace_fake_letter(word[i:i+3]) + word[i+3:]
+    for i in range(len(word)):
+        word = word[:i]+change_letter(word[i])+word[i+1:]
     flag_fake = (old_word != word)
     return word,flag_fake
     
@@ -105,15 +86,11 @@ def we_find_latin_letters(words):
     new_words = []
     fake_flag = False
     for word in words:
-        if len(word) == 2:
-            new_word,flag_word = check_2letter_word(word)
+        if len(word) > len(leave_only_russian_letters(word)):
+            new_word,fake_flag_temp = find_fake_letters(word)
             new_words.append(new_word)
-            if flag_word:
-                    fake_flag = True
+            if fake_flag_temp:
+                fake_flag = True
         else:
-            if len(leave_only_russian_letters(word)) >=1:
-                new_word,flag_word = find_fake_letters(word)
-                new_words.append(new_word)
-                if flag_word:
-                    fake_flag = True
+            new_words.append(word)
     return new_words, fake_flag
