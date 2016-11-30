@@ -80,6 +80,20 @@ def replace_fake_letter(three_letters):
         three_letters = latin_to_russian[three_letters[0]] + latin_to_russian[three_letters[1]]+three_letters[2] 
     return three_letters
 
+def check_2letter_word(word):
+    flag = False
+    try:
+        symb0 = latin_to_russian[word[0]]
+        flag = True
+    except:
+        symb0 = word[0]
+    try:
+        symb1 = latin_to_russian[word[1]]
+        flag = True
+    except:
+        symb1 = word[1]
+    return symb0+symb1,flag
+
 def find_fake_letters(word):
     old_word = word
     for i in range(len(word)-2):
@@ -91,9 +105,15 @@ def we_find_latin_letters(words):
     new_words = []
     fake_flag = False
     for word in words:
-        if len(leave_only_russian_letters(word)) >=1:
-            new_word,flag_word = find_fake_letters(word)
+        if len(word) == 2:
+            new_word,flag_word = check_2letter_word(word)
             new_words.append(new_word)
             if flag_word:
-                fake_flag = True
+                    fake_flag = True
+        else:
+            if len(leave_only_russian_letters(word)) >=1:
+                new_word,flag_word = find_fake_letters(word)
+                new_words.append(new_word)
+                if flag_word:
+                    fake_flag = True
     return new_words, fake_flag
