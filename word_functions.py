@@ -82,7 +82,7 @@ def replace_fake_letter(three_letters):
 
 def find_fake_letters(word):
     old_word = word
-    for i in range(len(word)-3):
+    for i in range(len(word)-2):
         word = word[:i] + replace_fake_letter(word[i:i+3]) + word[i+3:]
     flag_fake = (old_word != word)
     return word,flag_fake
@@ -91,7 +91,7 @@ def we_find_latin_letters(words):
     new_words = []
     fake_flag = False
     for word in words:
-        if len(leave_only_russian_letters(word)) >2:
+        if len(leave_only_russian_letters(word)) >=1:
             new_word,flag_word = find_fake_letters(word)
             new_words.append(new_word)
             if flag_word:
