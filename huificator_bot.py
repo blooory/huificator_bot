@@ -7,10 +7,14 @@ import json
 import pickle
 import string
 from special_function import special_function
-from word_functions import we_find_latin_letters,n_slogov, vowel_pos, replace_string, leave_only_russian_letters, huificate_word, preprocess_text, find_verbs
+from word_functions import we_find_latin_letters,n_slogov, vowel_pos, \
+        replace_string, leave_only_russian_letters, huificate_word, \
+        preprocess_text,find_verbs
+from other_functions import check_time
 import pymorphy2 as pm2
 import csv
 from datetime import datetime, timedelta
+
 with open('params.json', 'r') as temp_file:
     TOKEN = json.load(temp_file)['TOKEN']
 old_message_flag = True
